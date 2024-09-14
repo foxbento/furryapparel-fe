@@ -70,6 +70,35 @@ export default function BusinessList() {
     setPage(1); // Reset to first page when search term changes
   };
 
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const totalPagesToShow = 5; // Adjust this number to show more or fewer page numbers
+
+    let startPage = Math.max(1, page - Math.floor(totalPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + totalPagesToShow - 1);
+
+    if (endPage - startPage + 1 < totalPagesToShow) {
+      startPage = Math.max(1, endPage - totalPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <Button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          variant={i === page ? "secondary" : "outline"}
+          className="mx-1"
+          aria-label={`Go to page ${i}`}
+          aria-current={i === page ? "page" : undefined}
+        >
+          {i}
+        </Button>
+      );
+    }
+
+    return pageNumbers;
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
@@ -94,6 +123,7 @@ export default function BusinessList() {
         value={searchTerm}
         onChange={handleSearchChange}
         className="mb-4"
+        aria-label="Search businesses"
       />
 
       <div className="min-h-[600px]">
@@ -114,20 +144,41 @@ export default function BusinessList() {
         )}
       </div>
 
-      <div className="mt-6 flex justify-between items-center">
-        <Button 
-          onClick={() => handlePageChange(page > 1 ? page - 1 : 1)} 
-          disabled={page === 1 || isLoading}
-        >
-          Previous
-        </Button>
-        <span className="text-slate-300">Page {page} of {totalPages}</span>
-        <Button 
-          onClick={() => handlePageChange(page < totalPages ? page + 1 : totalPages)} 
-          disabled={page === totalPages || isLoading}
-        >
-          Next
-        </Button>
+      <nav aria-label="Pagination" className="mt-6">
+        <div className="flex flex-wrap justify-center items-center gap-2">
+          <Button 
+            onClick={() => handlePageChange(1)} 
+            disabled={page === 1 || isLoading}
+            aria-label="Go to first page"
+          >
+            First
+          </Button>
+          <Button 
+            onClick={() => handlePageChange(page > 1 ? page - 1 : 1)} 
+            disabled={page === 1 || isLoading}
+            aria-label="Go to previous page"
+          >
+            Previous
+          </Button>
+          {renderPageNumbers()}
+          <Button 
+            onClick={() => handlePageChange(page < totalPages ? page + 1 : totalPages)} 
+            disabled={page === totalPages || isLoading}
+            aria-label="Go to next page"
+          >
+            Next
+          </Button>
+          <Button 
+            onClick={() => handlePageChange(totalPages)} 
+            disabled={page === totalPages || isLoading}
+            aria-label="Go to last page"
+          >
+            Last
+          </Button>
+        </div>
+      </nav>
+      <div className="mt-2 text-center text-slate-300" aria-live="polite" aria-atomic="true">
+        Page {page} of {totalPages}
       </div>
     </div>
   );
