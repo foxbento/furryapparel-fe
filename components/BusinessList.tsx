@@ -75,7 +75,7 @@ export default function BusinessList() {
     const totalPagesToShow = 5; // Adjust this number to show more or fewer page numbers
 
     let startPage = Math.max(1, page - Math.floor(totalPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + totalPagesToShow - 1);
+    const endPage = Math.min(totalPages, startPage + totalPagesToShow - 1);
 
     if (endPage - startPage + 1 < totalPagesToShow) {
       startPage = Math.max(1, endPage - totalPagesToShow + 1);
