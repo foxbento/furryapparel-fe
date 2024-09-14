@@ -36,12 +36,17 @@ export default function BusinessList() {
   const fetchBusinesses = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    const apiUrl = getApiUrl();
+    const fullUrl = `${apiUrl}/api/businesses?page=${page}&pageSize=${ITEMS_PER_PAGE}&search=${debouncedSearchTerm}`;
+    console.log('Fetching from URL:', fullUrl);
     try {
-      const response = await fetch(`${getApiUrl()}/api/businesses?page=${page}&pageSize=${ITEMS_PER_PAGE}&search=${debouncedSearchTerm}`);
+      const response = await fetch(fullUrl);
+      console.log('Response status:', response.status);
       if (!response.ok) {
-        throw new Error('Failed to fetch businesses');
+        throw new Error(`Failed to fetch businesses: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
+      console.log('Received data:', data);
       setBusinesses(data.businesses);
       setTotalPages(Math.ceil(data.totalCount / ITEMS_PER_PAGE));
     } catch (error) {
